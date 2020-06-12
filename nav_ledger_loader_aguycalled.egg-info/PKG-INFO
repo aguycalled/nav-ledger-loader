@@ -1,0 +1,14 @@
+Metadata-Version: 1.2
+Name: nav-ledger-loader-aguycalled
+Version: 0.0.1
+Summary: Navcoin Ledger App loader
+Home-page: https://github.com/aguycalled/nav-ledger-loader
+Author: alex v
+Author-email: alex@nav.community
+License: UNKNOWN
+Description: Navcoin Ledger App loader
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
