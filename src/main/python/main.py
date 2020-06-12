@@ -5,7 +5,8 @@ from ledgerblue.hexLoader import HexLoader
 from ledgerblue.hexLoader import *
 from ledgerblue.hexParser import IntelHexParser, IntelHexPrinter
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QMessageBox
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QWidget
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import binascii
 import sys
 import struct
@@ -13,36 +14,19 @@ import struct
 DEFAULT_ALIGNMENT = 1024
 PAGE_ALIGNMENT = 64
 
-dongle = getDongle(True)
-appName = "NavCoin"
-appVersion = "1.3.17"
-appFlags = 0xa50
-targetId = 0x31100004
-
-app = QApplication([])
-label = QLabel("This app will help you to manage the NavCoin app in your Ledger Nano S.\n\n"
-	"Please, connect your Ledger, be sure that it is in the dashboard.\n\n"
-	"When you click next, your ledger will ask permission to use an unsafe manager.\n\n"
-	"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.")
-label.setAlignment(Qt.AlignCenter)
-button = QPushButton("Next")
-layout = QVBoxLayout()
-layout.addWidget(label)
-layout.addWidget(button)
-window = QWidget()
-window.setLayout(layout)
-window.show()
-
-if (sys.version_info.major == 3):
-	appName = bytes(appName,'ascii')
-if (sys.version_info.major == 2):
-	appName = bytes(appName)
-
 privateKey = None
 publicKey = None
 rootPrivateKey = None
 secret = None
 loader = None
+state = 0
+install = 0
+
+app = QApplication(sys.argv)
+
+def somethingWrong(s):
+	QMessageBox.warning(None, "Error", "Something went wrong: {}".format(s))
+	sys.exit(-1)
 
 def click():
 	global state, install
@@ -103,7 +87,7 @@ def installApp():
 	try:
 		global loader
 		apilevel = 10
-		fileName = "app.hex"
+		fileName = appctxt.get_resource("app.hex")
 		appFlags = 0xa50
 		parser = IntelHexParser(fileName)
 		bootAddr = parser.getBootAddr()
@@ -142,13 +126,9 @@ def installApp():
 		somethingWrong(e)
 	success("App was installed {}".format(hash))
 
-def somethingWrong(s):
-	QMessageBox.warning(None, "Error", "Something went wrong: {}".format(s))
-	exit(-1)
-
 def success(s):
 	QMessageBox.information(None, "Ok!", "It worked! {}".format(s))
-	exit(-1)
+	sys.exit(-1)
 
 def isInstalled(): 
 	try:
@@ -162,21 +142,47 @@ def isInstalled():
 			cleardata_block_len = 16
 		loader = HexLoader(dongle, 0xe0, True, secret, cleardata_block_len=cleardata_block_len)
 		apps = loader.listApp()
-		print("looking for the app")
 		while len(apps) != 0:
 			for a in apps:
 				if a["name"] == "NavCoin":
 					return True
 			apps = loader.listApp(False)
-		print("Not found")
 		return False
 	except BaseException as e:
 		somethingWrong(e)
 
-state = 0
-install = 0
+if __name__ == '__main__':
+	try:
+		dongle = getDongle(True)
+	except BaseException as e:
+		somethingWrong(e)
 
-button.clicked.connect(click)
+	appName = "NavCoin"
+	appVersion = "1.3.17"
+	appFlags = 0xa50
+	targetId = 0x31100004
 
-app.exec_()
+	appctxt = ApplicationContext()  
+	label = QLabel("This app will help you to install/uninstall the NavCoin app in your Ledger Nano S.\n\n"
+		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
+		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n\n"
+		"DISCLAIMER: This app is an unofficial tool created by the NavCoin dev team.\nThe NavCoin app has not been reviewed by the Ledger team yet.\n\n"
+		"Use at your own risk!")
+	label.setAlignment(Qt.AlignCenter)
+	button = QPushButton("Next")
+	layout = QVBoxLayout()
+	layout.addWidget(label)
+	layout.addWidget(button)
+	window = QWidget()
+	window.setLayout(layout)
+	window.show()
 
+	if (sys.version_info.major == 3):
+		appName = bytes(appName,'ascii')
+	if (sys.version_info.major == 2):
+		appName = bytes(appName)
+
+	button.clicked.connect(click)
+
+	exit_code = appctxt.app.exec_()     
+	sys.exit(exit_code)

@@ -45,7 +45,7 @@
  [],
  False,
  False,
- 1591919923,
+ 1591921669,
  [('runw',
    '/Users/alex/nav-ledger-loader/ledger/lib/python3.7/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
    'EXECUTABLE')])
