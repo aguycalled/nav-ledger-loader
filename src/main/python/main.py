@@ -6,6 +6,7 @@ from ledgerblue.hexLoader import *
 from ledgerblue.hexParser import IntelHexParser, IntelHexPrinter
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget, QMessageBox
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import binascii
 import sys
 import struct
@@ -19,7 +20,7 @@ appVersion = "1.3.17"
 appFlags = 0xa50
 targetId = 0x31100004
 
-app = QApplication([])
+appctxt = ApplicationContext()  
 label = QLabel("This app will help you to manage the NavCoin app in your Ledger Nano S.\n\n"
 	"Please, connect your Ledger, be sure that it is in the dashboard.\n\n"
 	"When you click next, your ledger will ask permission to use an unsafe manager.\n\n"
@@ -103,7 +104,7 @@ def installApp():
 	try:
 		global loader
 		apilevel = 10
-		fileName = "app.hex"
+		fileName = appctxt.get_resource("app.hex")
 		appFlags = 0xa50
 		parser = IntelHexParser(fileName)
 		bootAddr = parser.getBootAddr()
@@ -144,11 +145,11 @@ def installApp():
 
 def somethingWrong(s):
 	QMessageBox.warning(None, "Error", "Something went wrong: {}".format(s))
-	exit(-1)
+	sys.exit(-1)
 
 def success(s):
 	QMessageBox.information(None, "Ok!", "It worked! {}".format(s))
-	exit(-1)
+	sys.exit(-1)
 
 def isInstalled(): 
 	try:
@@ -162,13 +163,11 @@ def isInstalled():
 			cleardata_block_len = 16
 		loader = HexLoader(dongle, 0xe0, True, secret, cleardata_block_len=cleardata_block_len)
 		apps = loader.listApp()
-		print("looking for the app")
 		while len(apps) != 0:
 			for a in apps:
 				if a["name"] == "NavCoin":
 					return True
 			apps = loader.listApp(False)
-		print("Not found")
 		return False
 	except BaseException as e:
 		somethingWrong(e)
@@ -178,5 +177,5 @@ install = 0
 
 button.clicked.connect(click)
 
-app.exec_()
-
+exit_code = appctxt.app.exec_()     
+sys.exit(exit_code)
