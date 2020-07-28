@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="nav-ledger-loader-aguycalled",
-    version="0.0.1",
+    version="0.0.2",
     author="alex v",
     author_email="alex@nav.community",
     description="Navcoin Ledger App loader",
