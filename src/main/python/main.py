@@ -36,7 +36,7 @@ def click():
 			state = 1
 			install = 0
 		else:
-			label.setText("It looks like the NavCoin app is not installed.\n\nClick next if you want to install it it")
+			label.setText("It looks like the NavCoin app is not installed.\n\nClick next if you want to install it")
 			state = 1
 			install = 1
 	elif state == 1:
@@ -48,6 +48,23 @@ def click():
 			label.setText("Removing...\n\nAccept the operation in the ledger.")
 			print("Uninstalling...")
 			QTimer.singleShot(1000, remove)
+			
+def selectLedgerS():
+	label.setText("You selected Ledger Nano S\n\n"
+		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
+		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n")
+	nanoSBtn.setVisible(False)
+	nanoXBtn.setVisible(False)
+	nextBtn.setVisible(True)
+	
+def selectLedgerX():
+	targetId=0x33000004
+	label.setText("You selected Ledger Nano X\n\n"
+		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
+		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n")
+	nanoSBtn.setVisible(False)
+	nanoXBtn.setVisible(False)
+	nextBtn.setVisible(True)
 
 
 def remove():
@@ -152,6 +169,8 @@ def isInstalled():
 		somethingWrong(e)
 
 if __name__ == '__main__':
+	global nanoSBtn, nanoXBtn, nextBtn, targetId
+	
 	try:
 		dongle = getDongle(True)
 	except BaseException as e:
@@ -163,16 +182,22 @@ if __name__ == '__main__':
 	targetId = 0x31100004
 
 	appctxt = ApplicationContext()  
-	label = QLabel("This app will help you to install/uninstall the NavCoin app in your Ledger Nano S.\n\n"
-		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
-		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n\n"
+	label = QLabel("This app will help you to install/uninstall the NavCoin app in your Ledger Nano S/X.\n\n"
 		"DISCLAIMER: This app is an unofficial tool created by the NavCoin dev team.\nThe NavCoin app has not been reviewed by the Ledger team yet.\n\n"
-		"Use at your own risk!")
+		"Use at your own risk!\n\n"
+		"Please select your device:\n\n")
 	label.setAlignment(Qt.AlignCenter)
-	button = QPushButton("Next")
+	nanoSBtn = QPushButton("Ledger Nano S")
+	nanoXBtn = QPushButton("Ledger Nano X")
+	nextBtn = QPushButton("Next")
+	nextBtn.setVisible(False)
 	layout = QVBoxLayout()
 	layout.addWidget(label)
-	layout.addWidget(button)
+	layoutBtn = QVBoxLayout()
+	layout.addLayout(layoutBtn)
+	layoutBtn.addWidget(nanoSBtn)
+	layoutBtn.addWidget(nanoXBtn)
+	layoutBtn.addWidget(nextBtn)
 	window = QWidget()
 	window.setLayout(layout)
 	window.show()
@@ -182,7 +207,9 @@ if __name__ == '__main__':
 	if (sys.version_info.major == 2):
 		appName = bytes(appName)
 
-	button.clicked.connect(click)
+	nextBtn.clicked.connect(click)
+	nanoSBtn.clicked.connect(selectLedgerS)
+	nanoXBtn.clicked.connect(selectLedgerN)
 
 	exit_code = appctxt.app.exec_()     
 	sys.exit(exit_code)
