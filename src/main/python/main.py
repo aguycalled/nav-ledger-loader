@@ -5,7 +5,7 @@ from ledgerblue.hexLoader import HexLoader
 from ledgerblue.hexLoader import *
 from ledgerblue.hexParser import IntelHexParser, IntelHexPrinter
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QWidget
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QWidget, QHBoxLayout
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import binascii
 import sys
@@ -58,6 +58,7 @@ def selectLedgerS():
 	nextBtn.setVisible(True)
 	
 def selectLedgerX():
+	global targetId
 	targetId=0x33000004
 	label.setText("You selected Ledger Nano X\n\n"
 		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
@@ -193,11 +194,16 @@ if __name__ == '__main__':
 	nextBtn.setVisible(False)
 	layout = QVBoxLayout()
 	layout.addWidget(label)
-	layoutBtn = QVBoxLayout()
+	layoutBtn = QHBoxLayout()
 	layout.addLayout(layoutBtn)
 	layoutBtn.addWidget(nanoSBtn)
 	layoutBtn.addWidget(nanoXBtn)
 	layoutBtn.addWidget(nextBtn)
+
+	nextBtn.clicked.connect(click)
+	nanoSBtn.clicked.connect(selectLedgerS)
+	nanoXBtn.clicked.connect(selectLedgerX)
+
 	window = QWidget()
 	window.setLayout(layout)
 	window.show()
@@ -206,10 +212,6 @@ if __name__ == '__main__':
 		appName = bytes(appName,'ascii')
 	if (sys.version_info.major == 2):
 		appName = bytes(appName)
-
-	nextBtn.clicked.connect(click)
-	nanoSBtn.clicked.connect(selectLedgerS)
-	nanoXBtn.clicked.connect(selectLedgerN)
 
 	exit_code = appctxt.app.exec_()     
 	sys.exit(exit_code)
