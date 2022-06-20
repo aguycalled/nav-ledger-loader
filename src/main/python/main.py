@@ -4,9 +4,9 @@ from ledgerblue.deployed import getDeployedSecretV1, getDeployedSecretV2
 from ledgerblue.hexLoader import HexLoader
 from ledgerblue.hexLoader import *
 from ledgerblue.hexParser import IntelHexParser, IntelHexPrinter
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QWidget, QHBoxLayout
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QMessageBox, QWidget, QHBoxLayout
+from fbs_runtime.application_context.PyQt6 import ApplicationContext
 import binascii
 import sys
 import struct
@@ -32,11 +32,11 @@ def click():
 	global state, install
 	if state == 0:
 		if isInstalled():
-			label.setText("It looks like the NavCoin app is already installed.\n\nClick next if you want to remove it")
+			label.setText("It looks like the Navcoin app is already installed.\n\nClick next if you want to remove it")
 			state = 1
 			install = 0
 		else:
-			label.setText("It looks like the NavCoin app is not installed.\n\nClick next if you want to install it")
+			label.setText("It looks like the Navcoin app is not installed.\n\nClick next if you want to install it")
 			state = 1
 			install = 1
 	elif state == 1:
@@ -162,7 +162,7 @@ def isInstalled():
 		apps = loader.listApp()
 		while len(apps) != 0:
 			for a in apps:
-				if a["name"] == "NavCoin":
+				if a["name"] == "Navcoin":
 					return True
 			apps = loader.listApp(False)
 		return False
@@ -177,17 +177,17 @@ if __name__ == '__main__':
 	except BaseException as e:
 		somethingWrong(e)
 
-	appName = "NavCoin"
+	appName = "Navcoin"
 	appVersion = "1.3.17"
 	appFlags = 0xa50
 	targetId = 0x31100004
 
 	appctxt = ApplicationContext()  
-	label = QLabel("This app will help you to install/uninstall the NavCoin app in your Ledger Nano S/X.\n\n"
-		"DISCLAIMER: This app is an unofficial tool created by the NavCoin dev team.\nThe NavCoin app has not been reviewed by the Ledger team yet.\n\n"
+	label = QLabel("This app will help you to install/uninstall the Navcoin app in your Ledger Nano S/X.\n\n"
+		"DISCLAIMER: This app is an unofficial tool created by the Navcoin dev team.\nThe Navcoin app has not been reviewed by the Ledger team yet.\n\n"
 		"Use at your own risk!\n\n"
 		"Please select your device:\n\n")
-	label.setAlignment(Qt.AlignCenter)
+	label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 	nanoSBtn = QPushButton("Ledger Nano S")
 	nanoXBtn = QPushButton("Ledger Nano X")
 	nextBtn = QPushButton("Next")
@@ -213,5 +213,5 @@ if __name__ == '__main__':
 	if (sys.version_info.major == 2):
 		appName = bytes(appName)
 
-	exit_code = appctxt.app.exec_()     
+	exit_code = appctxt.app.exec()     
 	sys.exit(exit_code)
