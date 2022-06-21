@@ -2,7 +2,8 @@
 
 Navcoin Ledger App loader
 
-# How to use
+
+## How to use
 
 ```
 git clone https://github.com/aguycalled/nav-ledger-loader
