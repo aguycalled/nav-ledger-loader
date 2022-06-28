@@ -54,17 +54,17 @@ def selectLedgerS():
 		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
 		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n")
 	nanoSBtn.setVisible(False)
-	nanoXBtn.setVisible(False)
+	nanoSPlusBtn.setVisible(False)
 	nextBtn.setVisible(True)
 	
-def selectLedgerX():
+def selectLedgerSPlus():
 	global targetId
-	targetId=0x33000004
-	label.setText("You selected Ledger Nano X\n\n"
+	targetId=0x33100004
+	label.setText("You selected Ledger Nano S Plus\n\n"
 		"When you click next, your ledger will ask permission to use an unsafe manager.\nPlease be sure you are on the dashboard.\n\n"
 		"Push the right button until you see Allow unsafe manager and then push both buttons at the same time to allow it.\n\n")
 	nanoSBtn.setVisible(False)
-	nanoXBtn.setVisible(False)
+	nanoSPlusBtn.setVisible(False)
 	nextBtn.setVisible(True)
 
 
@@ -170,7 +170,7 @@ def isInstalled():
 		somethingWrong(e)
 
 if __name__ == '__main__':
-	global nanoSBtn, nanoXBtn, nextBtn, targetId
+	global nanoSBtn, nanoSPlusBtn, nextBtn, targetId
 	
 	try:
 		dongle = getDongle(True)
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 		"Please select your device:\n\n")
 	label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 	nanoSBtn = QPushButton("Ledger Nano S")
-	nanoXBtn = QPushButton("Ledger Nano X")
+	nanoSPlusBtn = QPushButton("Ledger Nano S Plus")
 	nextBtn = QPushButton("Next")
 	nextBtn.setVisible(False)
 	layout = QVBoxLayout()
@@ -197,12 +197,12 @@ if __name__ == '__main__':
 	layoutBtn = QHBoxLayout()
 	layout.addLayout(layoutBtn)
 	layoutBtn.addWidget(nanoSBtn)
-	layoutBtn.addWidget(nanoXBtn)
+	layoutBtn.addWidget(nanoSPlusBtn)
 	layoutBtn.addWidget(nextBtn)
 
 	nextBtn.clicked.connect(click)
 	nanoSBtn.clicked.connect(selectLedgerS)
-	nanoXBtn.clicked.connect(selectLedgerX)
+	nanoSPlusBtn.clicked.connect(selectLedgerSPlus)
 
 	window = QWidget()
 	window.setLayout(layout)
