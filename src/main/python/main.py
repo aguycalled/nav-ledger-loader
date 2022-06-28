@@ -183,7 +183,7 @@ if __name__ == '__main__':
 	targetId = 0x31100004
 
 	appctxt = ApplicationContext()  
-	label = QLabel("This app will help you to install/uninstall the Navcoin app in your Ledger Nano S/X.\n\n"
+	label = QLabel("This app will help you to install/uninstall the Navcoin app in your Ledger Nano S/S Plus.\n\n"
 		"DISCLAIMER: This app is an unofficial tool created by the Navcoin dev team.\nThe Navcoin app has not been reviewed by the Ledger team yet.\n\n"
 		"Use at your own risk!\n\n"
 		"Please select your device:\n\n")
