@@ -105,7 +105,7 @@ def installApp():
 	try:
 		global loader
 		apilevel = 10
-		fileName = appctxt.get_resource("app.hex")
+		fileName = appctxt.get_resource("nanosplus/app.hex" if targetId == 0x33100004 else "nanos/app.hex")
 		appFlags = 0xa50
 		parser = IntelHexParser(fileName)
 		bootAddr = parser.getBootAddr()
@@ -113,10 +113,10 @@ def installApp():
 		path = b""
 		path += struct.pack('>B',curveMask)
 		apilevel = 10
-		icon = bytearray.fromhex("010000000000ffffffffffffffffff0f870f870787078203c203c041c0e1e0e1e1e1e1ffffffffffff")
+		icon = bytearray.fromhex("010000000000ffffffffffffffffffcff7cff7aff72ff76fe7e7f6eff4eff5eff3eff3ffffffffffff")
 		signature = None
 		printer = IntelHexPrinter(parser)
-		dataSize = 64
+		dataSize = 512 if targetId == 0x33100004 else 64
 		code_length = printer.maxAddr() - printer.minAddr()
 		code_length -= dataSize
 		installparams = b""
